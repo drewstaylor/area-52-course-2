@@ -1,5 +1,3 @@
-pub mod species;
-
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use cosmwasm_std::{Empty, Addr, Reply, SubMsgResult};
@@ -7,7 +5,8 @@ use cw2::set_contract_version;
 
 pub use cw721_soulbound::{ContractError, InstantiateMsg, MintMsg, MinterResponse, QueryMsg};
 pub use cw721::Expiration;
-pub use crate::species::{Species, SapienceScale};
+pub use universe::species::{Species, SapienceScale};
+
 pub use cw721::{ContractInfoResponse};
 
 #[allow(clippy::derive_partial_eq_without_eq)]
