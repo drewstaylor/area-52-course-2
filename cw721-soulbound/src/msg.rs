@@ -3,6 +3,7 @@ use serde::{Deserialize, Serialize};
 
 use cw721::Expiration;
 
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct InstantiateMsg {
     /// Name of the NFT contract
@@ -55,6 +56,7 @@ pub enum ExecuteMsg<T, E> {
     Extension { msg: E },
 }
 
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct MintMsg<T> {
     /// Unique ID of the NFT
@@ -69,6 +71,7 @@ pub struct MintMsg<T> {
     pub extension: T,
 }
 
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum QueryMsg<Q> {
@@ -148,6 +151,7 @@ pub enum QueryMsg<Q> {
 }
 
 /// Shows who can mint these tokens
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Serialize, Deserialize, Clone, PartialEq, JsonSchema, Debug)]
 pub struct MinterResponse {
     pub minter: String,

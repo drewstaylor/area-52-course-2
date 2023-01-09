@@ -10,6 +10,7 @@ use serde::__private::PhantomData;
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct Cw721Contract<Q: CustomMsg, E: CustomMsg>(
     pub Addr,
