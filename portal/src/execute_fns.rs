@@ -13,6 +13,17 @@ use crate::{
     state::{CONFIG, VISAS},
 };
 
+// XXX TODO: 
+// The current functions for handling NFTs can be removed wholesale
+// and be safely replaced by a check in `initiate_jump_ring_travel` that verifies
+// the caller owns an NFT of the visa-token contract. Additionally, the following
+// additions will be required:
+//
+// 1) Minting endpoint in `execute_fns.rs`
+// 2) Minting endpoint must enforce users can only hold one NFT from the token contract
+// 3) E.g. users may mint if they never minted; or, if they've burned their token
+
+// XXX TODO: isn't needed
 pub fn receive_visa(
     sender: String,
     token_id: String,
@@ -52,10 +63,11 @@ pub fn receive_visa(
 
     Ok(Response::new()
         .add_attribute("action", "receive_visa")
-        .add_attribute("new_owner", env.contract.address)
+        .add_attribute("new_owner", env.contract.address) // XXX TODO: Remove this as ownership is not actually transferred
         .add_attribute("new_token_id", token_id))
 }
 
+// XXX TODO: isn't needed
 /// Receive initial details and add to visa whitelist for later verification.
 pub fn assign_visa(
     msg: AssignVisaMsg,
@@ -79,16 +91,14 @@ pub fn initiate_jump_ring_travel(
     deps: DepsMut,
     info: MessageInfo,
 ) -> Result<Response, ContractError> {
-    /*  The visa has to be approved for this to happen.
-        1. check that the sender is the visas list
-        2. check that the visa is approved (which happens when they send their visa to this contract)
-    */
 
+    // XXX TODO: replace this with a query to `visa_token::tokens` to check if info.sender owns an NFT
     let visa = match VISAS.load(deps.storage, &info.sender) {
         Ok(v) => v,
         Err(_) => return Err(ContractError::NotOnList {}),
     };
 
+    // XXX TODO: isn't needed
     if !visa.approved {
         return Err(ContractError::Unapproved {});
     }
