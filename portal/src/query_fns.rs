@@ -15,6 +15,10 @@ pub fn minimum_sapience(deps: Deps) -> StdResult<Binary> {
     Ok(out)
 }
 
+// XXX TODO: This is currently invalid / insecure. It takes 
+// a Traveler as an argument (instead of loading from storage
+// based on an address key). Like asking the enduser: "is 'True' 
+// equal to 'True'", instead of checking their DNA actually
 pub fn jump_ring_check(traveler: Traveler) -> StdResult<Binary> {
     let out = to_binary(&JumpRingCheckResponse {
         valid: traveler.cyberdized,

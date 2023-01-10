@@ -13,7 +13,6 @@ pub fn check_minimum_sapience_level() {
     let env = mock_env();
     let sender_name = "not on list";
     let info = mock_info(sender_name, &[]);
-    let ms_input = SapienceScale::High;
 
     // Set the minimum_sapience
     let init_msg = InstantiateMsg {
@@ -30,7 +29,8 @@ pub fn check_minimum_sapience_level() {
     instantiate(deps.as_mut(), env.clone(), info, init_msg).unwrap();
     let res = query(deps.as_ref(), env.clone(), QueryMsg::MinimumSapience {}).unwrap();
     let res: SapienceResponse = from_binary(&res).unwrap();
-    assert_eq!(res.level, ms_input);
+
+    assert_eq!(res.level, SapienceScale::High);
 }
 
 // XXX TODO:
