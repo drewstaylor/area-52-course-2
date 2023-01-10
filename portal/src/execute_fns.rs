@@ -1,11 +1,14 @@
 use cosmwasm_std::{
-    Addr, CosmosMsg, DepsMut, Env, MessageInfo, to_binary, 
-    Response, WasmMsg,
+    Addr, CosmosMsg, DepsMut, Env, MessageInfo, QueryRequest, 
+    to_binary, Response, WasmMsg, WasmQuery,
 };
 
 use crate::msg::MintMsg;
-// use cw721::{Cw721QueryMsg, NftInfoResponse};
-use visa_token::{ExecuteMsg as Cw721ExecuteMsg, Extension, Metadata, MintMsg as Cw721MintMsg};
+use cw721::{NftInfoResponse, TokensResponse};
+use visa_token::{
+    ExecuteMsg as Cw721ExecuteMsg, Extension, Metadata, 
+    MintMsg as Cw721MintMsg, QueryMsg as Cw721QueryMsg,
+};
 use universe::species::{SapienceScale, Sapient};
 
 use crate::{
@@ -24,6 +27,21 @@ pub fn mint_visa(
     // Only potion contract can call this function
     let potion_contract = config.potion_contract;
     if info.sender != potion_contract {
+        return Err(ContractError::Unauthorized {});
+    }
+
+    // Minting fails if user already owns a Visa
+    let query_msg: visa_token::QueryMsg<Extension> = Cw721QueryMsg::Tokens {
+        owner: msg.identity.clone().into(),
+        start_after: None,
+        limit: None,
+    };
+    let query_req = QueryRequest::Wasm(WasmQuery::Smart {
+        contract_addr: config.visa_contract.clone().into(),
+        msg: to_binary(&query_msg).unwrap(),
+    });
+    let query_resp: TokensResponse = deps.querier.query(&query_req)?;
+    if !query_resp.tokens.is_empty() {
         return Err(ContractError::Unauthorized {});
     }
 
@@ -63,18 +81,39 @@ pub fn mint_visa(
 
 // XXX TODO: 
 // The following additions are required:
-//
 // 1) DONE - Minting endpoint in `execute_fns.rs`
-// 2) Minting endpoint must enforce users can only hold one NFT from the token contract
-// 3) E.g. users may mint if they never minted; or, if they've burned their token
+// 2) DONE - Minting endpoint must enforce users can only hold one NFT from the token contract
+// 3) DONE - initiate_jump_ring_travel must verify the traveler's visa before teleporting them
 
 pub fn initiate_jump_ring_travel(
     _to: Addr,
     traveler: Addr,
-    _deps: DepsMut,
+    deps: DepsMut,
+    _env: Env,
     _info: MessageInfo,
 ) -> Result<Response, ContractError> {
-    // XXX TODO: Verify Visa here
+    let config = CONFIG.load(deps.storage)?;
+
+    // Verify traveler's visa
+    let query_msg: visa_token::QueryMsg<Extension> = Cw721QueryMsg::NftInfo {
+        token_id: traveler.clone().into(),
+    };
+    let query_req = QueryRequest::Wasm(WasmQuery::Smart {
+        contract_addr: config.visa_contract.clone().into(),
+        msg: to_binary(&query_msg).unwrap(),
+    });
+    let query_resp: NftInfoResponse<Metadata> = deps.querier.query(&query_req)?;
+
+    // Since we're using soulbound NFTs, and because only the JumpRing contract 
+    // can mint, identity theft shouldn't be possible. We'll check just in case
+    // but the below statement could probably be safely removed from the project
+    // since if the token didn't exist the contract call would fail with an error
+    // in the preceding line (e.g. deps.querier.query(&query_req)?)
+    if query_resp.extension.identity.unwrap().to_string() != traveler.clone().to_string() {
+        return Err(ContractError::Unauthorized {});
+    }
+    
+    // XXX TODO: Process JumpRing travel -> _to: Addr
 
     Ok(Response::new()
         .add_attribute("action", "initiate_jump_ring_travel")

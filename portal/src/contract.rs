@@ -29,7 +29,7 @@ pub fn execute(
         ExecuteMsg::SetPlanetName { to } => set_planet_name(to, deps, info),
         ExecuteMsg::SetSapientNames { to } => set_sapient_names(to, deps, info),
         ExecuteMsg::SetMinimumSapience { to } => set_minimum_sapience(to, deps, info),
-        ExecuteMsg::JumpRingTravel { to, traveler } => initiate_jump_ring_travel(to, traveler, deps, info),
+        ExecuteMsg::JumpRingTravel { to, traveler } => initiate_jump_ring_travel(to, traveler, deps, env, info),
         ExecuteMsg::MintVisa { msg } => mint_visa(msg, deps, env, info),
     }
 }
