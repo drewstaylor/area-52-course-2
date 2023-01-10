@@ -79,12 +79,6 @@ pub fn mint_visa(
     Ok(Response::new().add_messages(messages))
 }
 
-// XXX TODO: 
-// The following additions are required:
-// 1) DONE - Minting endpoint in `execute_fns.rs`
-// 2) DONE - Minting endpoint must enforce users can only hold one NFT from the token contract
-// 3) DONE - initiate_jump_ring_travel must verify the traveler's visa before teleporting them
-
 pub fn initiate_jump_ring_travel(
     _to: Addr,
     traveler: Addr,

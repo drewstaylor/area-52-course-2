@@ -6,7 +6,9 @@
     "minimum_sapience",
     "owner",
     "planet_name",
-    "planet_sapients"
+    "planet_sapients",
+    "potion_contract",
+    "visa_contract"
   ],
   "properties": {
     "minimum_sapience": {
@@ -23,6 +25,12 @@
       "items": {
         "$ref": "#/definitions/Sapient"
       }
+    },
+    "potion_contract": {
+      "$ref": "#/definitions/Addr"
+    },
+    "visa_contract": {
+      "$ref": "#/definitions/Addr"
     }
   },
   "definitions": {
