@@ -74,8 +74,7 @@ pub fn mint_passport(
     // When calling another contract we need to use a vector of responses
     // This allows for returning separate responses for state transitions
     // in both contracts
-    let mut messages = Vec::new();
-    messages.push(mint_resp);
+    let messages = vec![mint_resp];
     Ok(Response::new().add_messages(messages))
 }
 
@@ -93,7 +92,7 @@ pub fn initiate_jump_ring_travel(
         token_id: traveler.clone().into(),
     };
     let query_req = QueryRequest::Wasm(WasmQuery::Smart {
-        contract_addr: config.passport_contract.clone().into(),
+        contract_addr: config.passport_contract.into(),
         msg: to_binary(&query_msg).unwrap(),
     });
     let query_resp: NftInfoResponse<Metadata> = deps.querier.query(&query_req)?;
@@ -103,7 +102,7 @@ pub fn initiate_jump_ring_travel(
     // but the below statement could probably be safely removed from the project
     // since if the token didn't exist the contract call would fail with an error
     // in the preceding line (e.g. deps.querier.query(&query_req)?)
-    if query_resp.extension.identity.unwrap().to_string() != traveler.clone().to_string() {
+    if query_resp.extension.identity.unwrap() != traveler {
         return Err(ContractError::Unauthorized {});
     }
     
@@ -111,7 +110,7 @@ pub fn initiate_jump_ring_travel(
 
     Ok(Response::new()
         .add_attribute("action", "initiate_jump_ring_travel")
-        .add_attribute("traveler", &traveler))
+        .add_attribute("traveler", traveler))
 }
 
 pub fn set_minimum_sapience(
