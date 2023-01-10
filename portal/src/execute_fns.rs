@@ -1,111 +1,84 @@
 use cosmwasm_std::{
-    from_binary, to_binary, Addr, DepsMut, Env, MessageInfo, QueryRequest, Response, WasmQuery,
+    Addr, CosmosMsg, DepsMut, Env, MessageInfo, to_binary, 
+    Response, WasmMsg,
 };
 
-use cw721::{Cw721QueryMsg, NftInfoResponse};
-use visa_token::Metadata;
-use universe::species::{SapienceResponse, SapienceScale, Sapient};
+use crate::msg::MintMsg;
+// use cw721::{Cw721QueryMsg, NftInfoResponse};
+use visa_token::{ExecuteMsg as Cw721ExecuteMsg, Extension, Metadata, MintMsg as Cw721MintMsg};
+use universe::species::{SapienceScale, Sapient};
 
 use crate::{
     error::ContractError,
-    msg::{AssignVisaMsg, Visa},
-    query_fns::minimum_sapience,
-    state::{CONFIG, VISAS},
+    state::CONFIG,
 };
 
-// XXX TODO: 
-// The current functions for handling NFTs can be removed wholesale
-// and be safely replaced by a check in `initiate_jump_ring_travel` that verifies
-// the caller owns an NFT of the visa-token contract. Additionally, the following
-// additions will be required:
-//
-// 1) Minting endpoint in `execute_fns.rs`
-// 2) Minting endpoint must enforce users can only hold one NFT from the token contract
-// 3) E.g. users may mint if they never minted; or, if they've burned their token
-
-// XXX TODO: isn't needed
-pub fn receive_visa(
-    sender: String,
-    token_id: String,
+pub fn mint_visa(
+    msg: MintMsg,
     deps: DepsMut,
     env: Env,
     info: MessageInfo,
 ) -> Result<Response, ContractError> {
-    let msg = Cw721QueryMsg::NftInfo {
-        token_id: token_id.clone(),
-    };
-
-    let query = WasmQuery::Smart {
-        contract_addr: info.sender.to_string(), // XXX TODO: Fix this error by loading Visa contract addr from state
-        msg: to_binary(&msg)?,
-    };
-
-    let res: NftInfoResponse<Metadata> = deps.querier.query(&QueryRequest::Wasm(query))?;
-
-    let extension_metadata = res.extension;
-    let incoming_sapience_level = extension_metadata.sapience.unwrap();
+    let config = CONFIG.load(deps.storage)?;
     
-    let contract_min_sapience: SapienceResponse = from_binary(
-        &minimum_sapience(deps.as_ref()).unwrap()
-    ).unwrap();
-
-    if incoming_sapience_level.as_num() < contract_min_sapience.level.as_num() {
-        return Err(ContractError::NotSmartEnough {});
+    // Only potion contract can call this function
+    let potion_contract = config.potion_contract;
+    if info.sender != potion_contract {
+        return Err(ContractError::Unauthorized {});
     }
 
-    VISAS.update(deps.storage, &Addr::unchecked(sender), |old| match old {
-        None => Err(ContractError::NotOnList {}),
-        Some(mut visa) => {
-            visa.approved = true;
-            Ok(visa)
-        }
-    })?;
+    let metadata_extension: Extension = Some(Metadata {
+        name: Some(msg.name),
+        description: Some(msg.description),
+        image: Some(msg.image),
+        dna: Some(msg.dna), // XXX TODO (drew): Re-work the way DNA strings are built and parsed in Potion contract
+        species: Some(msg.species),
+        sapience_level: Some(msg.sapience_level),
+        issuer: Some(env.contract.address.clone()),
+        origin: Some(env.contract.address),
+        identity: Some(msg.identity.clone()),
+    });
 
-    Ok(Response::new()
-        .add_attribute("action", "receive_visa")
-        .add_attribute("new_owner", env.contract.address) // XXX TODO: Remove this as ownership is not actually transferred
-        .add_attribute("new_token_id", token_id))
+    let mint_msg: visa_token::ExecuteMsg = Cw721ExecuteMsg::Mint(Cw721MintMsg {
+        token_id: msg.identity.clone().into(),
+        owner: msg.identity.into(),
+        token_uri: None,
+        extension: metadata_extension,
+    });
+
+    let mint_resp: CosmosMsg = WasmMsg::Execute {
+        contract_addr: config.visa_contract.into(),
+        msg: to_binary(&mint_msg)?,
+        funds: vec![],
+    }
+    .into();
+
+    // When calling another contract we need to use a vector of responses
+    // This allows for returning separate responses for state transitions
+    // in both contracts
+    let mut messages = Vec::new();
+    messages.push(mint_resp);
+    Ok(Response::new().add_messages(messages))
 }
 
-// XXX TODO: isn't needed
-/// Receive initial details and add to visa whitelist for later verification.
-pub fn assign_visa(
-    msg: AssignVisaMsg,
-    deps: DepsMut,
-    _info: MessageInfo,
-) -> Result<Response, ContractError> {
-    // XXX TODO: Handle Visa approval (see above fn)
-
-    let visa = Visa {
-        approved: false,
-        details: msg.details.clone(),
-    };
-
-    VISAS.save(deps.storage, &msg.details.holder, &visa)?;
-
-    Ok(Response::new().add_attribute("action", "assign_visa"))
-}
+// XXX TODO: 
+// The following additions are required:
+//
+// 1) DONE - Minting endpoint in `execute_fns.rs`
+// 2) Minting endpoint must enforce users can only hold one NFT from the token contract
+// 3) E.g. users may mint if they never minted; or, if they've burned their token
 
 pub fn initiate_jump_ring_travel(
     _to: Addr,
-    deps: DepsMut,
-    info: MessageInfo,
+    traveler: Addr,
+    _deps: DepsMut,
+    _info: MessageInfo,
 ) -> Result<Response, ContractError> {
-
-    // XXX TODO: replace this with a query to `visa_token::tokens` to check if info.sender owns an NFT
-    let visa = match VISAS.load(deps.storage, &info.sender) {
-        Ok(v) => v,
-        Err(_) => return Err(ContractError::NotOnList {}),
-    };
-
-    // XXX TODO: isn't needed
-    if !visa.approved {
-        return Err(ContractError::Unapproved {});
-    }
+    // XXX TODO: Verify Visa here
 
     Ok(Response::new()
         .add_attribute("action", "initiate_jump_ring_travel")
-        .add_attribute("traveler", &info.sender))
+        .add_attribute("traveler", &traveler))
 }
 
 pub fn set_minimum_sapience(
@@ -120,9 +93,7 @@ pub fn set_minimum_sapience(
     }
 
     config.minimum_sapience = to;
-
     CONFIG.save(deps.storage, &config)?;
-
     Ok(Response::default())
 }
 
@@ -132,9 +103,11 @@ pub fn set_planet_name(
     info: MessageInfo,
 ) -> Result<Response, ContractError> {
     let mut config = CONFIG.load(deps.storage)?;
+
     if info.sender != config.owner {
         return Err(ContractError::Unauthorized {});
     }
+
     config.planet_name = to;
     CONFIG.save(deps.storage, &config)?;
     Ok(Response::new().add_attribute("action", "set_planet_name"))
@@ -146,6 +119,7 @@ pub fn set_sapient_names(
     info: MessageInfo,
 ) -> Result<Response, ContractError> {
     let mut config = CONFIG.load(deps.storage)?;
+
     if info.sender != config.owner {
         return Err(ContractError::Unauthorized {});
     }

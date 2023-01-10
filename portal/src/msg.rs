@@ -1,32 +1,7 @@
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use cosmwasm_std::Addr;
-
 use universe::species::{SapienceScale, Sapient, Traveler};
-
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
-pub struct AssignVisaMsg {
-    pub details: VisaAdminDetails,
-}
-
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
-pub struct VisaAdminDetails {
-    pub ape: Addr,
-    /// The previous contract this is being sent from.
-    pub contract: Addr,
-    pub holder: Addr,
-    /// The token_id of the Visa to be approved later.
-    pub token_id: String,
-}
-
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
-pub struct Visa {
-    pub approved: bool,
-    pub details: VisaAdminDetails,
-}
 
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
@@ -41,9 +16,8 @@ pub enum ExecuteMsg {
     SetPlanetName { to: String },
     SetSapientNames { to: Vec<Sapient> },
     SetMinimumSapience { to: SapienceScale },
-    JumpRingTravel { to: Addr },
-    AssignVisa { msg: AssignVisaMsg },
-    ReceiveNft(cw721::Cw721ReceiveMsg),
+    JumpRingTravel { to: Addr, traveler: Addr, },
+    MintVisa { msg: MintMsg },
 }
 
 #[allow(clippy::derive_partial_eq_without_eq)]
@@ -52,6 +26,20 @@ pub struct InstantiateMsg {
     pub planet_name: String,
     pub planet_sapients: Vec<Sapient>,
     pub minimum_sapience: SapienceScale,
+    pub visa_contract: Addr,
+    pub potion_contract: Addr,
+}
+
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+pub struct MintMsg {
+    pub name: String,           // A human readable username (name is required for interoperability with NFT marketplaces)
+    pub description: String,    // Description is also required for interoperability with NFT marketplaces
+    pub image: String,          // Image is also required for interoperability with NFT Marketplaces
+    pub dna: String,            // Allows for proving cyberdization and traveler authenticity
+    pub species: String,
+    pub sapience_level: SapienceScale,
+    pub identity: Addr,         // The owner's wallet address
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]

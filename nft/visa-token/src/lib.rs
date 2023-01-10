@@ -15,9 +15,9 @@ pub struct Metadata {
     pub name: Option<String>,           // A human readable username (name is required for interoperability with NFT marketplaces)
     pub description: Option<String>,    // Description is also required for interoperability with NFT marketplaces
     pub image: Option<String>,          // Image is also required for interoperability with NFT Marketplaces
-    pub dna: Option<String>,            // Allows for proving cyberdization
+    pub dna: Option<String>,            // Allows for proving cyberdization and traveler authenticity
     pub species: Option<String>,
-    pub sapience: Option<SapienceScale>,
+    pub sapience_level: Option<SapienceScale>,
     pub issuer: Option<Addr>,           // Address of the JumpRing which issued (minted) this visa
     pub origin: Option<Addr>,           // JumpRing address of home planet
     pub identity: Option<Addr>,         // The owner's wallet address
@@ -122,7 +122,7 @@ mod tests {
             image: Some("ipfs://QmZdPdZzZum2jQ7jg1ekfeE3LSz1avAaa42G6mfimw9TEn".into()),
             dna: Some("Example DNA String".into()), // XXX TODO (drew): Re-work the way DNA strings are built and parsed in Potion contract
             species: Some(species.name),
-            sapience: Some(species.sapience_level),
+            sapience_level: Some(species.sapience_level),
             issuer: Some(Addr::unchecked("archway1yvnw8xj5elngcq95e2n2p8f80zl7shfwyxk88858pl6cgzveeqtqy7xtf7")),
             origin: Some(Addr::unchecked("archway1yvnw8xj5elngcq95e2n2p8f80zl7shfwyxk88858pl6cgzveeqtqy7xtf7")),
             identity: Some(Addr::unchecked("archway1f395p0gg67mmfd5zcqvpnp9cxnu0hg6r9hfczq")),

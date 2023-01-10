@@ -283,7 +283,7 @@
             }
           ]
         },
-        "sapience": {
+        "sapience_level": {
           "anyOf": [
             {
               "$ref": "#/definitions/SapienceScale"
