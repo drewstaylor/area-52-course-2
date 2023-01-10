@@ -17,7 +17,7 @@ pub fn check_minimum_sapience_level() {
 
     // Set the minimum_sapience
     let init_msg = InstantiateMsg {
-        planet_name: "foo".to_string(),
+        planet_name: "earth".to_string(),
         planet_sapients: vec![Sapient {
             name: "cyborg".to_string(),
             telepathic: true,
@@ -32,3 +32,7 @@ pub fn check_minimum_sapience_level() {
     let res: SapienceResponse = from_binary(&res).unwrap();
     assert_eq!(res.level, ms_input);
 }
+
+// XXX TODO:
+// 1) Test #1: verify same user cannot mint if they're already holding a passport (@see: fn mint_visa())
+// 2) Test #2: verify user cannot teleport without a valid passport (@see: fn initiate_jump_ring_travel)
