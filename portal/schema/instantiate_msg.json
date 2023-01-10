@@ -4,14 +4,17 @@
   "type": "object",
   "required": [
     "minimum_sapience",
+    "passport_contract",
     "planet_name",
     "planet_sapients",
-    "potion_contract",
-    "visa_contract"
+    "potion_contract"
   ],
   "properties": {
     "minimum_sapience": {
       "$ref": "#/definitions/SapienceScale"
+    },
+    "passport_contract": {
+      "$ref": "#/definitions/Addr"
     },
     "planet_name": {
       "type": "string"
@@ -23,9 +26,6 @@
       }
     },
     "potion_contract": {
-      "$ref": "#/definitions/Addr"
-    },
-    "visa_contract": {
       "$ref": "#/definitions/Addr"
     }
   },

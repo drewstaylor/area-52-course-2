@@ -5,7 +5,7 @@ use crate::error::ContractError;
 use crate::msg::{ExecuteMsg, InstantiateMsg, QueryMsg};
 use crate::query_fns::{jump_ring_check, minimum_sapience};
 use crate::execute_fns::{
-    initiate_jump_ring_travel, mint_visa, set_minimum_sapience, set_planet_name,
+    initiate_jump_ring_travel, mint_passport, set_minimum_sapience, set_planet_name,
     set_sapient_names,
 };
 use crate::state::{Config, CONFIG};
@@ -30,7 +30,7 @@ pub fn execute(
         ExecuteMsg::SetSapientNames { to } => set_sapient_names(to, deps, info),
         ExecuteMsg::SetMinimumSapience { to } => set_minimum_sapience(to, deps, info),
         ExecuteMsg::JumpRingTravel { to, traveler } => initiate_jump_ring_travel(to, traveler, deps, env, info),
-        ExecuteMsg::MintVisa { msg } => mint_visa(msg, deps, env, info),
+        ExecuteMsg::MintPassport { msg } => mint_passport(msg, deps, env, info),
     }
 }
 
@@ -46,7 +46,7 @@ pub fn instantiate(
         planet_name: msg.planet_name,
         planet_sapients: msg.planet_sapients,
         minimum_sapience: msg.minimum_sapience,
-        visa_contract: msg.visa_contract,
+        passport_contract: msg.passport_contract,
         potion_contract: msg.potion_contract,
     };
     CONFIG.save(deps.storage, &config)?;

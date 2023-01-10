@@ -17,7 +17,7 @@ pub enum ExecuteMsg {
     SetSapientNames { to: Vec<Sapient> },
     SetMinimumSapience { to: SapienceScale },
     JumpRingTravel { to: Addr, traveler: Addr, },
-    MintVisa { msg: MintMsg },
+    MintPassport { msg: MintMsg },
 }
 
 #[allow(clippy::derive_partial_eq_without_eq)]
@@ -26,7 +26,7 @@ pub struct InstantiateMsg {
     pub planet_name: String,
     pub planet_sapients: Vec<Sapient>,
     pub minimum_sapience: SapienceScale,
-    pub visa_contract: Addr,
+    pub passport_contract: Addr,
     pub potion_contract: Addr,
 }
 

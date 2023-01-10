@@ -1,5 +1,5 @@
 [package]
-name = "visa-token"
+name = "passport-token"
 version = "0.1.0"
 authors = ["Drew Taylor <drew.taylor@philabs.xyz>"]
 edition = "2018"

@@ -5,7 +5,7 @@ use cosmwasm_std::{
 
 use crate::msg::MintMsg;
 use cw721::{NftInfoResponse, TokensResponse};
-use visa_token::{
+use passport_token::{
     ExecuteMsg as Cw721ExecuteMsg, Extension, Metadata, 
     MintMsg as Cw721MintMsg, QueryMsg as Cw721QueryMsg,
 };
@@ -16,7 +16,7 @@ use crate::{
     state::CONFIG,
 };
 
-pub fn mint_visa(
+pub fn mint_passport(
     msg: MintMsg,
     deps: DepsMut,
     env: Env,
@@ -30,14 +30,14 @@ pub fn mint_visa(
         return Err(ContractError::Unauthorized {});
     }
 
-    // Minting fails if user already owns a Visa
-    let query_msg: visa_token::QueryMsg<Extension> = Cw721QueryMsg::Tokens {
+    // Minting fails if user already owns a valid passport
+    let query_msg: passport_token::QueryMsg<Extension> = Cw721QueryMsg::Tokens {
         owner: msg.identity.clone().into(),
         start_after: None,
         limit: None,
     };
     let query_req = QueryRequest::Wasm(WasmQuery::Smart {
-        contract_addr: config.visa_contract.clone().into(),
+        contract_addr: config.passport_contract.clone().into(),
         msg: to_binary(&query_msg).unwrap(),
     });
     let query_resp: TokensResponse = deps.querier.query(&query_req)?;
@@ -57,7 +57,7 @@ pub fn mint_visa(
         identity: Some(msg.identity.clone()),
     });
 
-    let mint_msg: visa_token::ExecuteMsg = Cw721ExecuteMsg::Mint(Cw721MintMsg {
+    let mint_msg: passport_token::ExecuteMsg = Cw721ExecuteMsg::Mint(Cw721MintMsg {
         token_id: msg.identity.clone().into(),
         owner: msg.identity.into(),
         token_uri: None,
@@ -65,7 +65,7 @@ pub fn mint_visa(
     });
 
     let mint_resp: CosmosMsg = WasmMsg::Execute {
-        contract_addr: config.visa_contract.into(),
+        contract_addr: config.passport_contract.into(),
         msg: to_binary(&mint_msg)?,
         funds: vec![],
     }
@@ -88,12 +88,12 @@ pub fn initiate_jump_ring_travel(
 ) -> Result<Response, ContractError> {
     let config = CONFIG.load(deps.storage)?;
 
-    // Verify traveler's visa
-    let query_msg: visa_token::QueryMsg<Extension> = Cw721QueryMsg::NftInfo {
+    // Verify traveler's passport
+    let query_msg: passport_token::QueryMsg<Extension> = Cw721QueryMsg::NftInfo {
         token_id: traveler.clone().into(),
     };
     let query_req = QueryRequest::Wasm(WasmQuery::Smart {
-        contract_addr: config.visa_contract.clone().into(),
+        contract_addr: config.passport_contract.clone().into(),
         msg: to_binary(&query_msg).unwrap(),
     });
     let query_resp: NftInfoResponse<Metadata> = deps.querier.query(&query_req)?;

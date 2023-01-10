@@ -23,7 +23,7 @@ pub fn check_minimum_sapience_level() {
             telepathic: true,
         }],
         minimum_sapience: SapienceScale::High,
-        visa_contract: Addr::unchecked("archway1yvnw8xj5elngcq95e2n2p8f80zl7shfwyxk88858pl6cgzveeqtqy7xtf7"),
+        passport_contract: Addr::unchecked("archway1yvnw8xj5elngcq95e2n2p8f80zl7shfwyxk88858pl6cgzveeqtqy7xtf7"),
         potion_contract: Addr::unchecked("archway1u6clujjm2qnem09gd4y7hhmulftvlt6mej4q0dd742tzcnsstt2q70lpu6"),
     };
 

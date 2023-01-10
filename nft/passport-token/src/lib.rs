@@ -18,7 +18,7 @@ pub struct Metadata {
     pub dna: Option<String>,            // Allows for proving cyberdization and traveler authenticity
     pub species: Option<String>,
     pub sapience_level: Option<SapienceScale>,
-    pub issuer: Option<Addr>,           // Address of the JumpRing which issued (minted) this visa
+    pub issuer: Option<Addr>,           // Address of the JumpRing which issued (minted) this passport
     pub origin: Option<Addr>,           // JumpRing address of home planet
     pub identity: Option<Addr>,         // The owner's wallet address
 }
@@ -29,7 +29,7 @@ pub type Cw721MetadataContract<'a> = cw721_soulbound::Cw721Contract<'a, Extensio
 
 pub type ExecuteMsg = cw721_soulbound::ExecuteMsg<Extension, Empty>;
 
-const CONTRACT_NAME: &str = "crates.io:visa-token";
+const CONTRACT_NAME: &str = "crates.io:passport-token";
 const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
 
 pub mod entry {
@@ -93,8 +93,8 @@ mod tests {
     use cosmwasm_std::testing::{mock_dependencies, mock_env, mock_info};
     use cw721::{Cw721Query};
 
-    const MINTER: &str = "jumpring";    // Each JumpRing mints visas and handles visa approvals;
-                                        // Like an airport security and intergalactic embassy combined
+    const MINTER: &str = "jumpring";    // Each JumpRing mints passports and handles passport validation;
+                                        // (Like airport security and an intergalactic embassy combined)
 
     #[test]
     fn use_metadata_extension() {
@@ -103,8 +103,8 @@ mod tests {
 
         let info = mock_info(MINTER, &[]);
         let init_msg = InstantiateMsg {
-            name: "visa token".to_string(),
-            symbol: "VISA".to_string(),
+            name: "passport token".to_string(),
+            symbol: "PASS".to_string(),
             minter: MINTER.to_string(),
         };
         contract

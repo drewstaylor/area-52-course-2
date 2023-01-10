@@ -1,20 +1,11 @@
-use schemars::JsonSchema;
-use serde::{Deserialize, Serialize};
-use cosmwasm_std::{to_binary, Binary, Deps, StdResult};
 
-use crate::{
-    msg::JumpRingCheckResponse, 
-    state::CONFIG
+use cosmwasm_std::{
+    to_binary, Binary, Deps, StdResult,
 };
-
-use visa_token::Metadata;
+use crate::{
+    msg::JumpRingCheckResponse, state::CONFIG,
+};
 use universe::species::{SapienceResponse, Traveler};
-
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
-pub struct VisasResponse {
-    pub visas: Vec<Metadata>,
-}
 
 pub fn minimum_sapience(deps: Deps) -> StdResult<Binary> {
     let config = CONFIG.load(deps.storage)?;

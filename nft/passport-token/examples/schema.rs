@@ -8,7 +8,7 @@ use cw721::{
     AllNftInfoResponse, ApprovalResponse, ApprovalsResponse, ContractInfoResponse, NftInfoResponse,
     NumTokensResponse, OperatorsResponse, OwnerOfResponse, TokensResponse,
 };
-use visa_token::{ExecuteMsg, Extension, InstantiateMsg, MinterResponse, QueryMsg};
+use passport_token::{ExecuteMsg, Extension, InstantiateMsg, MinterResponse, QueryMsg};
 
 fn main() {
     let mut out_dir = current_dir().unwrap();

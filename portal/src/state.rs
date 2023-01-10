@@ -10,7 +10,7 @@ pub struct Config {
     pub planet_name: String,
     pub planet_sapients: Vec<Sapient>,
     pub minimum_sapience: SapienceScale,
-    pub visa_contract: Addr,
+    pub passport_contract: Addr,
     pub potion_contract: Addr,
 }
 
