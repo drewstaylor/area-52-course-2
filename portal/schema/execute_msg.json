@@ -68,20 +68,36 @@
     {
       "type": "object",
       "required": [
-        "JumpRingTravel"
+        "SetPassportContract"
       ],
       "properties": {
-        "JumpRingTravel": {
+        "SetPassportContract": {
           "type": "object",
           "required": [
-            "to",
-            "traveler"
+            "contract"
           ],
           "properties": {
-            "to": {
+            "contract": {
               "$ref": "#/definitions/Addr"
-            },
-            "traveler": {
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "SetPotionContract"
+      ],
+      "properties": {
+        "SetPotionContract": {
+          "type": "object",
+          "required": [
+            "contract"
+          ],
+          "properties": {
+            "contract": {
               "$ref": "#/definitions/Addr"
             }
           }
@@ -103,6 +119,30 @@
           "properties": {
             "msg": {
               "$ref": "#/definitions/MintMsg"
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "JumpRingTravel"
+      ],
+      "properties": {
+        "JumpRingTravel": {
+          "type": "object",
+          "required": [
+            "to",
+            "traveler"
+          ],
+          "properties": {
+            "to": {
+              "$ref": "#/definitions/Addr"
+            },
+            "traveler": {
+              "$ref": "#/definitions/Addr"
             }
           }
         }

@@ -16,8 +16,10 @@ pub enum ExecuteMsg {
     SetPlanetName { to: String },
     SetSapientNames { to: Vec<Sapient> },
     SetMinimumSapience { to: SapienceScale },
-    JumpRingTravel { to: Addr, traveler: Addr, },
+    SetPassportContract { contract: Addr },
+    SetPotionContract { contract: Addr },
     MintPassport { msg: MintMsg },
+    JumpRingTravel { to: Addr, traveler: Addr, },
 }
 
 #[allow(clippy::derive_partial_eq_without_eq)]

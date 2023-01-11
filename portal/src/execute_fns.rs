@@ -99,7 +99,7 @@ pub fn initiate_jump_ring_travel(
 
     // Since we're using soulbound NFTs, and because only the JumpRing contract 
     // can mint, identity theft shouldn't be possible. We'll check just in case
-    // but the below statement could be safely removed since the contract call 
+    // but the below check could be safely removed since the contract call 
     // would fail already fail with an error at `deps.querier.query(&query_req)?`
     if query_resp.extension.identity.unwrap() != traveler {
         return Err(ContractError::Unauthorized {});
@@ -158,4 +158,36 @@ pub fn set_sapient_names(
     config.planet_sapients = to;
     CONFIG.save(deps.storage, &config)?;
     Ok(Response::new().add_attribute("action", "set_sapient_names"))
+}
+
+pub fn set_passport_contract(
+    contract: Addr,
+    deps: DepsMut,
+    info: MessageInfo,
+) -> Result<Response, ContractError> {
+    let mut config = CONFIG.load(deps.storage)?;
+
+    if info.sender != config.owner {
+        return Err(ContractError::Unauthorized {});
+    }
+
+    config.passport_contract = contract;
+    CONFIG.save(deps.storage, &config)?;
+    Ok(Response::new().add_attribute("action", "set_passport_contract"))
+}
+
+pub fn set_potion_contract(
+    contract: Addr,
+    deps: DepsMut,
+    info: MessageInfo,
+) -> Result<Response, ContractError> {
+    let mut config = CONFIG.load(deps.storage)?;
+
+    if info.sender != config.owner {
+        return Err(ContractError::Unauthorized {});
+    }
+
+    config.potion_contract = contract;
+    CONFIG.save(deps.storage, &config)?;
+    Ok(Response::new().add_attribute("action", "set_potion_contract"))
 }
