@@ -19,7 +19,12 @@ use passport_token::{
     Metadata, QueryMsg as Cw721QueryMsg,
 };
 
-pub static DENOM: &str = "uport"; // Fractional representation of the PORT coin used here as the native currency
+pub static DENOM: &str = "uport";   // Fractional representation of the PORT coin 
+                                    // used as the native currency in our tests
+
+// XXX TODO: 
+// Refactor contract setup (store, instantiate for Portal and Passport contracts) 
+// into a separate helper function, and remove redundant code
 
 #[test]
 pub fn check_minimum_sapience_level() {
@@ -46,10 +51,6 @@ pub fn check_minimum_sapience_level() {
 
     assert_eq!(res.level, SapienceScale::High);
 }
-
-// XXX TODO:
-// 1) Test #1: verify same user cannot mint if they're already holding a passport (@see: fn mint_visa())
-// 2) Test #2: verify user cannot teleport without a valid passport (@see: fn initiate_jump_ring_travel)
 
 fn mock_app() -> App {
     App::default()
@@ -139,10 +140,10 @@ fn create_portal(
     contract
 }
 
-#[test]
-/// To see debugger output from any println! macros, uncomment the macro and run 
-/// test using the `nocapture` flag
+/// To see debugger output from any println! macros, uncomment the macro 
+/// and run test using the `nocapture` flag
 /// E.g. cargo test -- --nocapture
+#[test]
 pub fn minting_passport() {
     let mut app = mock_app();
     let owner = Addr::unchecked("owner");
@@ -286,7 +287,100 @@ pub fn minting_passport() {
     );
 }
 
-// #[test]
-// pub fn verifying_passport() {
-    
-// }
+/// For now this test is focused on validating passport requirements
+/// To see debugger output from any println! macros, uncomment the macro 
+/// and run test using the `nocapture` flag
+/// E.g. cargo test -- --nocapture
+#[test]
+pub fn initiating_jump_ring_travel() {
+    let mut app = mock_app();
+    let owner = Addr::unchecked("owner");
+    let user = Addr::unchecked("user");
+    let another_user = Addr::unchecked("random");
+    let another_portal = Addr::unchecked("jupiter");
+    let current_time = get_block_time(&mut app);
+    increment_block_time(&mut app, current_time + 1000, 7);
+    assert_eq!(get_block_time(&mut app), current_time + 1000);
+
+    // Mint tokens to pay for gas
+    mint_native(
+        &mut app,
+        owner.to_string(),
+        String::from(DENOM),
+        Uint128::from(10000u128),
+    );
+    mint_native(
+        &mut app,
+        user.to_string(),
+        String::from(DENOM),
+        Uint128::from(10000u128),
+    );
+
+    // Instance of portal contract
+    let portal_contract = create_portal(
+        &mut app,
+        owner.clone(),
+    );
+
+    // Instance of passport token contract
+    let nft_contract = create_cw721(&mut app, &portal_contract);
+
+    // Update portal with correct passport token address
+    let update_msg = ExecuteMsg::SetPassportContract {
+        contract: nft_contract.clone(),
+    };
+    let _portal_update = app.execute_contract(
+        owner.clone(), 
+        portal_contract.clone(), 
+        &update_msg, 
+        &[]
+    );
+
+    // Mint first passport
+    let mint_msg = ExecuteMsg::MintPassport {
+        msg: MintMsg {
+            name: "Traveler Name".to_string(),
+            description: "Ever since you became a Cyborg, you've been feeling pretty weird...".to_string(),
+            image: "ipfs://QmZdPdZzZum2jQ7jg1ekfeE3LSz1avAaa42G6mfimw9TEn".to_string(),
+            dna: "Example DNA String".to_string(),
+            species: "Cyborg type 3 (Human)".to_string(),
+            sapience_level: SapienceScale::High,
+            identity: user.clone(),
+        }
+    };
+    let mint_res = app.execute_contract(
+        owner.clone(), 
+        portal_contract.clone(), 
+        &mint_msg, 
+        &[]
+    );
+    assert!(mint_res.is_ok());
+
+    // Traveling without a valid passport fails
+    let failing_travel_msg = ExecuteMsg::JumpRingTravel {
+        to: another_portal.clone(), 
+        traveler: another_user,
+    };
+    let failed_travel_res = app.execute_contract(
+        owner.clone(), 
+        portal_contract.clone(), 
+        &failing_travel_msg,
+        &[]
+    );
+    // println!("{:?}", &failed_travel_res);
+    assert!(failed_travel_res.is_err());
+
+    // Traveling with a valid passport succeeds
+    let travel_msg = ExecuteMsg::JumpRingTravel { 
+        to: another_portal, 
+        traveler: user.clone(),
+    };
+    let travel_res = app.execute_contract(
+        owner.clone(), 
+        portal_contract.clone(), 
+        &travel_msg,
+        &[]
+    );
+    // println!("{:?}", &travel_res);
+    assert!(travel_res.is_ok());
+}
