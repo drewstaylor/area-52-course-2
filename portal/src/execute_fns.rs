@@ -99,9 +99,8 @@ pub fn initiate_jump_ring_travel(
 
     // Since we're using soulbound NFTs, and because only the JumpRing contract 
     // can mint, identity theft shouldn't be possible. We'll check just in case
-    // but the below statement could probably be safely removed from the project
-    // since if the token didn't exist the contract call would fail with an error
-    // in the preceding line (e.g. deps.querier.query(&query_req)?)
+    // but the below statement could be safely removed since the contract call 
+    // would fail already fail with an error at `deps.querier.query(&query_req)?`
     if query_resp.extension.identity.unwrap() != traveler {
         return Err(ContractError::Unauthorized {});
     }
