@@ -48,7 +48,7 @@ pub fn mint_passport(
         name: Some(msg.name),
         description: Some(msg.description),
         image: Some(msg.image),
-        dna: Some(msg.dna), // XXX TODO (drew): Re-work the way DNA strings are built and parsed in Potion contract
+        dna: Some(msg.dna), // XXX TODO: Re-work the way DNA strings are built and parsed in Potion contract
         species: Some(msg.species),
         sapience_level: Some(msg.sapience_level),
         issuer: Some(env.contract.address.clone()),
@@ -63,6 +63,7 @@ pub fn mint_passport(
         extension: metadata_extension,
     });
 
+    // Mint the passport
     let mint_resp: CosmosMsg = WasmMsg::Execute {
         contract_addr: config.passport_contract.into(),
         msg: to_binary(&mint_msg)?,
@@ -70,9 +71,9 @@ pub fn mint_passport(
     }
     .into();
 
-    // When calling another contract we need to use a vector of responses
-    // This allows for returning separate responses for state transitions
-    // in both contracts
+    // After calling another contract we need to use a vector for responses
+    // This allows for returning separate responses for the state transitions
+    // of both this contract and the token contract called via `CosmosMsg`
     let messages = vec![mint_resp];
     Ok(Response::new().add_messages(messages))
 }
@@ -97,7 +98,7 @@ pub fn initiate_jump_ring_travel(
     let query_resp: NftInfoResponse<Metadata> = deps.querier.query(&query_req)?;
 
     // Since we're using soulbound NFTs, and because only the JumpRing contract 
-    // can mint, identity theft shouldn't be possible. We'll check just in case
+    // can mint, identity theft shouldn't be possible. We'll check just in case,
     // but the below check could be safely removed since the contract call 
     // would fail already fail with an error at `deps.querier.query(&query_req)?`
     if query_resp.extension.identity.unwrap() != traveler {
