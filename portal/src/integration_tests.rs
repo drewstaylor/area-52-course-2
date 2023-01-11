@@ -7,7 +7,7 @@ use cosmwasm_std::{
 use cosmwasm_std::testing::{mock_dependencies, mock_env, mock_info};
 use cw_multi_test::{App, Contract, ContractWrapper, Executor};
 
-use crate::contract::{instantiate, query as contract_query};
+use crate::contract::{instantiate as portal_instantiate, query as portal_query};
 use crate::msg::{
     ExecuteMsg, InstantiateMsg, MintMsg, QueryMsg, 
 };
@@ -45,8 +45,8 @@ pub fn check_minimum_sapience_level() {
         potion_contract: Addr::unchecked("archway1u6clujjm2qnem09gd4y7hhmulftvlt6mej4q0dd742tzcnsstt2q70lpu6"),
     };
 
-    instantiate(deps.as_mut(), env.clone(), info, init_msg).unwrap();
-    let res = contract_query(deps.as_ref(), env.clone(), QueryMsg::MinimumSapience {}).unwrap();
+    portal_instantiate(deps.as_mut(), env.clone(), info, init_msg).unwrap();
+    let res = portal_query(deps.as_ref(), env.clone(), QueryMsg::MinimumSapience {}).unwrap();
     let res: SapienceResponse = from_binary(&res).unwrap();
 
     assert_eq!(res.level, SapienceScale::High);
