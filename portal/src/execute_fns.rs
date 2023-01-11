@@ -117,11 +117,9 @@ pub fn set_minimum_sapience(
     info: MessageInfo,
 ) -> Result<Response, ContractError> {
     let mut config = CONFIG.load(deps.storage)?;
-
     if info.sender != config.owner {
         return Err(ContractError::Unauthorized {});
     }
-
     config.minimum_sapience = to;
     CONFIG.save(deps.storage, &config)?;
     Ok(Response::default())
@@ -133,11 +131,9 @@ pub fn set_planet_name(
     info: MessageInfo,
 ) -> Result<Response, ContractError> {
     let mut config = CONFIG.load(deps.storage)?;
-
     if info.sender != config.owner {
         return Err(ContractError::Unauthorized {});
     }
-
     config.planet_name = to;
     CONFIG.save(deps.storage, &config)?;
     Ok(Response::new().add_attribute("action", "set_planet_name"))
@@ -149,11 +145,9 @@ pub fn set_sapient_names(
     info: MessageInfo,
 ) -> Result<Response, ContractError> {
     let mut config = CONFIG.load(deps.storage)?;
-
     if info.sender != config.owner {
         return Err(ContractError::Unauthorized {});
     }
-
     config.planet_sapients = to;
     CONFIG.save(deps.storage, &config)?;
     Ok(Response::new().add_attribute("action", "set_sapient_names"))
@@ -165,11 +159,9 @@ pub fn set_passport_contract(
     info: MessageInfo,
 ) -> Result<Response, ContractError> {
     let mut config = CONFIG.load(deps.storage)?;
-
     if info.sender != config.owner {
         return Err(ContractError::Unauthorized {});
     }
-
     config.passport_contract = contract;
     CONFIG.save(deps.storage, &config)?;
     Ok(Response::new().add_attribute("action", "set_passport_contract"))
@@ -181,11 +173,9 @@ pub fn set_potion_contract(
     info: MessageInfo,
 ) -> Result<Response, ContractError> {
     let mut config = CONFIG.load(deps.storage)?;
-
     if info.sender != config.owner {
         return Err(ContractError::Unauthorized {});
     }
-
     config.potion_contract = contract;
     CONFIG.save(deps.storage, &config)?;
     Ok(Response::new().add_attribute("action", "set_potion_contract"))
