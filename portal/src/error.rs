@@ -8,4 +8,7 @@ pub enum ContractError {
 
     #[error("Unauthorized")]
     Unauthorized {},
+
+    #[error("Carrying two passports is a crime")]
+    IllegalAlien {},
 }

@@ -41,7 +41,7 @@ pub fn mint_passport(
     });
     let query_resp: TokensResponse = deps.querier.query(&query_req)?;
     if !query_resp.tokens.is_empty() {
-        return Err(ContractError::Unauthorized {});
+        return Err(ContractError::IllegalAlien {});
     }
 
     let metadata_extension: Extension = Some(Metadata {
