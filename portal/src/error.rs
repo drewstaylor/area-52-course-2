@@ -8,13 +8,4 @@ pub enum ContractError {
 
     #[error("Unauthorized")]
     Unauthorized {},
-
-    #[error("Not Approved")]
-    Unapproved {},
-
-    #[error("You don't qualify to visit.")]
-    NotSmartEnough {},
-
-    #[error("Visa not on List")]
-    NotOnList {},
 }
