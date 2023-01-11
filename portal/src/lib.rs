@@ -4,4 +4,4 @@ pub mod execute_fns;
 pub mod msg;
 pub mod query_fns;
 pub mod state;
-mod tests;
+mod integration_tests;

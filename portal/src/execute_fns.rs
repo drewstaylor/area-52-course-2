@@ -26,7 +26,11 @@ pub fn mint_passport(
     // Only potion contract can call this function
     let potion_contract = config.potion_contract;
     if info.sender != potion_contract {
-        return Err(ContractError::Unauthorized {});
+        // XXX: Second `if` is for testing without instatiating all 3 contracts. Can
+        // be removed later; e.g. after potion contract is updated to support minting
+        if info.sender != config.owner {
+            return Err(ContractError::Unauthorized {});
+        }
     }
 
     // Minting fails if user already owns a passport
@@ -105,6 +109,7 @@ pub fn initiate_jump_ring_travel(
         return Err(ContractError::Unauthorized {});
     }
     
+    // XXX TODO: Enforce `initiate_jump_ring_travel` must be called by Potion contract
     // XXX TODO: Process JumpRing travel -> _to: Addr
 
     Ok(Response::new()
