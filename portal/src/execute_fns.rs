@@ -3,18 +3,17 @@ use cosmwasm_std::{
     to_binary, Response, WasmMsg, WasmQuery,
 };
 
-use crate::msg::MintMsg;
 use cw721::{NftInfoResponse, TokensResponse};
 use passport_token::{
     ExecuteMsg as Cw721ExecuteMsg, Extension, Metadata, 
     MintMsg as Cw721MintMsg, QueryMsg as Cw721QueryMsg,
 };
-use universe::species::{SapienceScale, Sapient};
 
-use crate::{
-    error::ContractError,
-    state::CONFIG,
-};
+use crate::error::ContractError;
+use crate::state::CONFIG;
+use crate::msg::MintMsg;
+
+use universe::species::{SapienceScale, Sapient};
 
 pub fn mint_passport(
     msg: MintMsg,
