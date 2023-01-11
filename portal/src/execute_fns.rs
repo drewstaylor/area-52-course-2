@@ -29,7 +29,7 @@ pub fn mint_passport(
         return Err(ContractError::Unauthorized {});
     }
 
-    // Minting fails if user already owns a valid passport
+    // Minting fails if user already owns a passport
     let query_msg: passport_token::QueryMsg<Extension> = Cw721QueryMsg::Tokens {
         owner: msg.identity.clone().into(),
         start_after: None,
