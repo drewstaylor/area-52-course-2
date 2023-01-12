@@ -56,7 +56,7 @@ pub fn mint_passport(
         species: Some(msg.species),
         sapience_level: Some(msg.sapience_level),
         issuer: Some(env.contract.address.clone()),
-        origin: Some(env.contract.address),
+        origin: Some(config.planet_name),
         identity: Some(msg.identity.clone()),
     });
 

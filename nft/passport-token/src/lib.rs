@@ -19,7 +19,7 @@ pub struct Metadata {
     pub species: Option<String>,
     pub sapience_level: Option<SapienceScale>,
     pub issuer: Option<Addr>,           // Address of the JumpRing which issued (minted) this passport
-    pub origin: Option<Addr>,           // JumpRing address of home planet
+    pub origin: Option<String>,         // JumpRing address of home planet
     pub identity: Option<Addr>,         // The owner's wallet address
 }
 
@@ -124,7 +124,7 @@ mod tests {
             species: Some(species.name),
             sapience_level: Some(species.sapience_level),
             issuer: Some(Addr::unchecked("archway1yvnw8xj5elngcq95e2n2p8f80zl7shfwyxk88858pl6cgzveeqtqy7xtf7")),
-            origin: Some(Addr::unchecked("archway1yvnw8xj5elngcq95e2n2p8f80zl7shfwyxk88858pl6cgzveeqtqy7xtf7")),
+            origin: Some("earth".into()),
             identity: Some(Addr::unchecked("archway1f395p0gg67mmfd5zcqvpnp9cxnu0hg6r9hfczq")),
         });
 

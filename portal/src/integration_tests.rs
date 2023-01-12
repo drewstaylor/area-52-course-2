@@ -216,7 +216,7 @@ pub fn minting_passport() {
         species: Some("Cyborg type 3 (Human)".to_string()),
         sapience_level: Some(SapienceScale::High),
         issuer: Some(Addr::unchecked("contract0")),
-        origin: Some(Addr::unchecked("contract0")),
+        origin: Some("earth".to_string()),
         identity: Some(Addr::unchecked(user.clone())),
     });
     let nft_query: Cw721QueryMsg<Extension> = Cw721QueryMsg::NftInfo {
