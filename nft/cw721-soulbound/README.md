@@ -60,7 +60,7 @@ CW721-compliant contract, such as tradable names, crypto kitties,
 or tokenized real estate.
 
 Basically, you just need to write your handle function and import 
-`cw721_soulbound::contract::handle_transfer`, etc and dispatch to them.
+`cw721_soulbound::contract::mint`, etc and dispatch to them.
 This allows you to use custom `ExecuteMsg` and `QueryMsg` with your additional
 calls, but then use the underlying implementation for the standard cw721
 messages (except `transfer_nft` and `send_nft` which cannot be invoked). The same with 
