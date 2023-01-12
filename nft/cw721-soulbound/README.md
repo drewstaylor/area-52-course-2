@@ -45,9 +45,9 @@ Once you are happy with the content, you can compile it to wasm via:
 
 ```
 RUSTFLAGS='-C link-arg=-s' cargo wasm
-cp ../../target/wasm32-unknown-unknown/release/cw721_base.wasm .
-ls -l cw721_base.wasm
-sha256sum cw721_base.wasm
+cp ../../target/wasm32-unknown-unknown/release/cw721_soulbound.wasm .
+ls -l cw721_soulbound.wasm
+sha256sum cw721_soulbound.wasm
 ```
 
 Or for a production-ready (optimized) build, run a build command in the 
@@ -60,10 +60,10 @@ CW721-compliant contract, such as tradable names, crypto kitties,
 or tokenized real estate.
 
 Basically, you just need to write your handle function and import 
-`cw721_base::contract::handle_transfer`, etc and dispatch to them.
+`cw721_soulbound::contract::handle_transfer`, etc and dispatch to them.
 This allows you to use custom `ExecuteMsg` and `QueryMsg` with your additional
 calls, but then use the underlying implementation for the standard cw721
-messages you want to support. The same with `QueryMsg`. You will most
-likely want to write a custom, domain-specific `instantiate`.
+messages (except `transfer_nft` and `send_nft` which cannot be invoked). The same with 
+`QueryMsg`. You will most likely want to write a custom, domain-specific `instantiate`.
 
 **TODO: add example when written**
