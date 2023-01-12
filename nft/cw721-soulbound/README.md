@@ -1,7 +1,7 @@
 # Cw721 Soulbound
 
 This is a basic implementation of a cw721 NFT contract. It implements
-the [CW721 spec](../../packages/cw721/README.md) and is designed to
+the [CW721 spec](https://github.com/CosmWasm/cw-nfts/blob/main/packages/cw721/README.md) and is designed to
 be deployed as is, or imported into other contracts to easily build
 cw721-compatible NFTs with custom logic. Soulbound is implemented
 by removing `transfer_nft` and `send_nft` from the cw721-base package.
@@ -14,7 +14,7 @@ Implements:
 
 ## Implementation
 
-The `ExecuteMsg` and `QueryMsg` implementations follow the [CW721 spec](../../packages/cw721/README.md) and are described there.
+The `ExecuteMsg` and `QueryMsg` implementations follow the [CW721 spec](https://github.com/CosmWasm/cw-nfts/blob/main/packages/cw721/README.md) and are described there.
 Beyond that, we make a few additions:
 
 * `InstantiateMsg` takes name and symbol (for metadata), as well as a **Minter** address. This is a special address that has full 
