@@ -27,7 +27,7 @@ pub static DENOM: &str = "uport";   // Fractional representation of the PORT coi
 // into a separate helper function, and remove redundant code
 
 #[test]
-pub fn check_minimum_sapience_level() {
+pub fn checking_minimum_sapience_level() {
     let mut deps = mock_dependencies();
     let env = mock_env();
     let sender_name = "not on list";
