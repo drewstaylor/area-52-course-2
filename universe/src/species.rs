@@ -51,5 +51,6 @@ pub struct SapienceResponse {
 #[derive(Serialize, Deserialize, Clone, PartialEq, JsonSchema, Debug)]
 pub struct Sapient {
     pub name: String,
+    pub species: Species,
     pub telepathic: bool,
 }

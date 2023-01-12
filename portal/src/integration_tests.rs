@@ -11,7 +11,9 @@ use crate::contract::{instantiate as portal_instantiate, query as portal_query};
 use crate::msg::{
     ExecuteMsg, InstantiateMsg, MintMsg, QueryMsg, 
 };
-use universe::species::{SapienceResponse, SapienceScale, Sapient};
+use universe::species::{
+    SapienceResponse, SapienceScale, Sapient, Species
+};
 
 use cw721::{NftInfoResponse};
 use passport_token::{
@@ -25,32 +27,6 @@ pub static DENOM: &str = "uport";   // Fractional representation of the PORT coi
 // XXX TODO: 
 // Refactor contract setup (store, instantiate for Portal and Passport contracts) 
 // into a separate helper function, and remove redundant code
-
-#[test]
-pub fn checking_minimum_sapience_level() {
-    let mut deps = mock_dependencies();
-    let env = mock_env();
-    let sender_name = "not on list";
-    let info = mock_info(sender_name, &[]);
-
-    // Set the minimum_sapience
-    let init_msg = InstantiateMsg {
-        planet_name: "earth".to_string(),
-        planet_sapients: vec![Sapient {
-            name: "cyborg".to_string(),
-            telepathic: true,
-        }],
-        minimum_sapience: SapienceScale::High,
-        passport_contract: Addr::unchecked("archway1yvnw8xj5elngcq95e2n2p8f80zl7shfwyxk88858pl6cgzveeqtqy7xtf7"),
-        potion_contract: Addr::unchecked("archway1u6clujjm2qnem09gd4y7hhmulftvlt6mej4q0dd742tzcnsstt2q70lpu6"),
-    };
-
-    portal_instantiate(deps.as_mut(), env.clone(), info, init_msg).unwrap();
-    let res = portal_query(deps.as_ref(), env.clone(), QueryMsg::MinimumSapience {}).unwrap();
-    let res: SapienceResponse = from_binary(&res).unwrap();
-
-    assert_eq!(res.level, SapienceScale::High);
-}
 
 fn mock_app() -> App {
     App::default()
@@ -129,7 +105,24 @@ fn create_portal(
     let contract_id = router.store_code(contract_portal());
     let msg = InstantiateMsg {
         planet_name: "earth".to_string(),
-        planet_sapients: vec![Sapient {name: "cyborg".to_string(), telepathic: true}],
+        planet_sapients: vec![
+            Sapient {
+                name: "Some Cyborg".to_string(),
+                species: Species {
+                    name: "Cyborg Type 3 (Human)".to_string(),
+                    sapience_level: SapienceScale::High,
+                },
+                telepathic: true,
+            },
+            Sapient {
+                name: "Some Human".to_string(),
+                species: Species {
+                    name: "Human".to_string(),
+                    sapience_level: SapienceScale::Medium,
+                },
+                telepathic: false,
+            }
+        ],
         minimum_sapience: SapienceScale::High,
         passport_contract: Addr::unchecked("portal"),   // Must be updated after instantiation and token creation
         potion_contract: Addr::unchecked("potion"),     // Must be updated after instantiation and potion creation
@@ -138,6 +131,46 @@ fn create_portal(
         .instantiate_contract(contract_id, owner, &msg, &[], "portal-v1.0", None)
         .unwrap();
     contract
+}
+
+#[test]
+pub fn checking_minimum_sapience_level() {
+    let mut deps = mock_dependencies();
+    let env = mock_env();
+    let sender_name = "not on list";
+    let info = mock_info(sender_name, &[]);
+
+    // Set the minimum_sapience
+    let init_msg = InstantiateMsg {
+        planet_name: "earth".to_string(),
+        planet_sapients: vec![
+            Sapient {
+                name: "Some Cyborg".to_string(),
+                species: Species {
+                    name: "Cyborg Type 3 (Human)".to_string(),
+                    sapience_level: SapienceScale::High,
+                },
+                telepathic: true,
+            },
+            Sapient {
+                name: "Some Human".to_string(),
+                species: Species {
+                    name: "Human".to_string(),
+                    sapience_level: SapienceScale::Medium,
+                },
+                telepathic: false,
+            }
+        ],
+        minimum_sapience: SapienceScale::High,
+        passport_contract: Addr::unchecked("archway1yvnw8xj5elngcq95e2n2p8f80zl7shfwyxk88858pl6cgzveeqtqy7xtf7"),
+        potion_contract: Addr::unchecked("archway1u6clujjm2qnem09gd4y7hhmulftvlt6mej4q0dd742tzcnsstt2q70lpu6"),
+    };
+
+    portal_instantiate(deps.as_mut(), env.clone(), info, init_msg).unwrap();
+    let res = portal_query(deps.as_ref(), env.clone(), QueryMsg::MinimumSapience {}).unwrap();
+    let res: SapienceResponse = from_binary(&res).unwrap();
+
+    assert_eq!(res.level, SapienceScale::High);
 }
 
 /// To see debugger output from any println! macros, uncomment the macro 
