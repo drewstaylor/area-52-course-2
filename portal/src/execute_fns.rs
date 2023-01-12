@@ -77,7 +77,7 @@ pub fn mint_passport(
 
     // After calling another contract we need to use a vector for responses
     // This allows for returning separate responses for the state transitions
-    // of both this contract and the token contract called via `CosmosMsg`
+    // of both this contract and the token contract it called via `CosmosMsg`
     let messages = vec![mint_resp];
     Ok(Response::new().add_messages(messages))
 }
@@ -102,9 +102,10 @@ pub fn initiate_jump_ring_travel(
     let query_resp: NftInfoResponse<Metadata> = deps.querier.query(&query_req)?;
 
     // Since we're using soulbound NFTs, and because only the JumpRing contract 
-    // can mint, identity theft shouldn't be possible. We'll check just in case,
-    // but the below check could be safely removed since the contract call 
-    // would fail already fail with an error at `deps.querier.query(&query_req)?`
+    // can mint, and because `token_id` is keyed by user address, identity theft 
+    // shouldn't be possible. We can check as below, but this check could also be 
+    // safely removed since the contract call would fail already fail with an error 
+    // at `deps.querier.query(&query_req)?` since `token_id` is keyed by user address
     if query_resp.extension.identity.unwrap() != traveler {
         return Err(ContractError::Unauthorized {});
     }
