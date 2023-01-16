@@ -225,24 +225,6 @@ where
     E: CustomMsg,
     Q: CustomMsg,
 {
-    pub fn _transfer_nft(
-        &self,
-        deps: DepsMut,
-        env: &Env,
-        info: &MessageInfo,
-        recipient: &str,
-        token_id: &str,
-    ) -> Result<TokenInfo<T>, ContractError> {
-        let mut token = self.tokens.load(deps.storage, token_id)?;
-        // ensure we have permissions
-        self.check_can_send(deps.as_ref(), env, info, &token)?;
-        // set owner and remove existing approvals
-        token.owner = deps.api.addr_validate(recipient)?;
-        token.approvals = vec![];
-        self.tokens.save(deps.storage, token_id, &token)?;
-        Ok(token)
-    }
-
     #[allow(clippy::too_many_arguments)]
     pub fn _update_approvals(
         &self,
