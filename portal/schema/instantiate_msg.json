@@ -47,14 +47,33 @@
       "type": "object",
       "required": [
         "name",
+        "species",
         "telepathic"
       ],
       "properties": {
         "name": {
           "type": "string"
         },
+        "species": {
+          "$ref": "#/definitions/Species"
+        },
         "telepathic": {
           "type": "boolean"
+        }
+      }
+    },
+    "Species": {
+      "type": "object",
+      "required": [
+        "name",
+        "sapience_level"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "sapience_level": {
+          "$ref": "#/definitions/SapienceScale"
         }
       }
     }

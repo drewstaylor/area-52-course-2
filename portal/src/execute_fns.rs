@@ -87,9 +87,19 @@ pub fn initiate_jump_ring_travel(
     traveler: Addr,
     deps: DepsMut,
     _env: Env,
-    _info: MessageInfo,
+    info: MessageInfo,
 ) -> Result<Response, ContractError> {
     let config = CONFIG.load(deps.storage)?;
+
+    // Only potion contract can call this function
+    let potion_contract = config.potion_contract;
+    if info.sender != potion_contract {
+        // XXX: Second `if` is for testing without instatiating all 3 contracts. Can
+        // be removed later; e.g. after potion contract is updated to support minting
+        if info.sender != config.owner {
+            return Err(ContractError::Unauthorized {});
+        }
+    }
 
     // Verify traveler's passport
     let query_msg: passport_token::QueryMsg<Extension> = Cw721QueryMsg::NftInfo {
@@ -109,8 +119,7 @@ pub fn initiate_jump_ring_travel(
     if query_resp.extension.identity.unwrap() != traveler {
         return Err(ContractError::Unauthorized {});
     }
-    
-    // XXX TODO: Enforce `initiate_jump_ring_travel` must be called by Potion contract
+
     // XXX TODO: Process JumpRing travel -> _to: Addr
 
     Ok(Response::new()
