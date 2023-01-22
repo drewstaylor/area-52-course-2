@@ -4,7 +4,6 @@ use cosmwasm_std::{Empty, Addr, Reply, SubMsgResult};
 use cw2::set_contract_version;
 
 pub use cw721_soulbound::{ContractError, InstantiateMsg, MintMsg, MinterResponse, QueryMsg};
-pub use cw721::Expiration;
 pub use universe::species::{Species, SapienceScale};
 
 pub use cw721::{ContractInfoResponse};
