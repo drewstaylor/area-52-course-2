@@ -109,7 +109,7 @@ fn create_portal(
             Sapient {
                 name: "Some Cyborg".to_string(),
                 species: Species {
-                    name: "Cyborg Type 3 (Human)".to_string(),
+                    name: "Cyborg".to_string(),
                     sapience_level: SapienceScale::High,
                 },
                 telepathic: true,
@@ -147,7 +147,7 @@ pub fn checking_minimum_sapience_level() {
             Sapient {
                 name: "Some Cyborg".to_string(),
                 species: Species {
-                    name: "Cyborg Type 3 (Human)".to_string(),
+                    name: "Cyborg".to_string(),
                     sapience_level: SapienceScale::High,
                 },
                 telepathic: true,
@@ -223,10 +223,10 @@ pub fn minting_passport() {
     let mint_msg = ExecuteMsg::MintPassport {
         msg: MintMsg {
             name: "Traveler Name".to_string(),
-            description: "Ever since you became a Cyborg, you've been feeling pretty weird...".to_string(),
+            description: "Ever since you became a cyborg, you've been feeling pretty weird...".to_string(),
             image: "ipfs://QmZdPdZzZum2jQ7jg1ekfeE3LSz1avAaa42G6mfimw9TEn".to_string(),
             dna: "Example DNA String".to_string(),
-            species: "Cyborg type 3 (Human)".to_string(),
+            species: "Cyborg".to_string(),
             sapience_level: SapienceScale::High,
             identity: user.clone(),
         }
@@ -243,10 +243,10 @@ pub fn minting_passport() {
     // Verify metadata is correct for first minted passport
     let metadata_extension = Some(Metadata {
         name: Some("Traveler Name".to_string()),
-        description: Some("Ever since you became a Cyborg, you've been feeling pretty weird...".into()),
+        description: Some("Ever since you became a cyborg, you've been feeling pretty weird...".into()),
         image: Some("ipfs://QmZdPdZzZum2jQ7jg1ekfeE3LSz1avAaa42G6mfimw9TEn".to_string()),
         dna: Some("Example DNA String".to_string()),
-        species: Some("Cyborg type 3 (Human)".to_string()),
+        species: Some("Cyborg".to_string()),
         sapience_level: Some(SapienceScale::High),
         issuer: Some(Addr::unchecked("contract0")),
         origin: Some("earth".to_string()),
@@ -373,10 +373,10 @@ pub fn initiating_jump_ring_travel() {
     let mint_msg = ExecuteMsg::MintPassport {
         msg: MintMsg {
             name: "Traveler Name".to_string(),
-            description: "Ever since you became a Cyborg, you've been feeling pretty weird...".to_string(),
+            description: "Ever since you became a cyborg, you've been feeling pretty weird...".to_string(),
             image: "ipfs://QmZdPdZzZum2jQ7jg1ekfeE3LSz1avAaa42G6mfimw9TEn".to_string(),
             dna: "Example DNA String".to_string(),
-            species: "Cyborg type 3 (Human)".to_string(),
+            species: "Cyborg".to_string(),
             sapience_level: SapienceScale::High,
             identity: user.clone(),
         }
