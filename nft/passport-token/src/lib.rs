@@ -111,13 +111,13 @@ mod tests {
             .unwrap();
 
         let species = Species {
-            name: "Cyborg type 3 (Human)".to_string(),
+            name: "Cyborg".to_string(),
             sapience_level: SapienceScale::High,
         };
 
         let metadata_extension = Some(Metadata {
             name: Some("Traveler Name".into()),
-            description: Some("Ever since you became a Cyborg, you've been feeling pretty weird...".into()),
+            description: Some("Ever since you became a cyborg, you've been feeling pretty weird...".into()),
             image: Some("ipfs://QmZdPdZzZum2jQ7jg1ekfeE3LSz1avAaa42G6mfimw9TEn".into()),
             dna: Some("Example DNA String".into()), // XXX TODO (drew): Re-work the way DNA strings are built and parsed in Potion contract
             species: Some(species.name),
